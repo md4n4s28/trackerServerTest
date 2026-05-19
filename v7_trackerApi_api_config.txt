@@ -2,16 +2,14 @@
 // IMPORTANT: The EC200U is on Airtel LTE (100.84.x.x) — it CANNOT reach
 // 192.168.x.x (your local LAN). You need a publicly reachable address.
 //
-// For LOCAL TESTING on port 8081:
-//   1. Run: npm run dev (starts server on port 8081)
-//   2. Set API_SERVER_ADDR to "trackerservertest-production.up.railway.app"
-//   3. Set API_SERVER_PORT to 8081 (local development port)
-//   4. Set API_ENDPOINT_PATH to "/api/tracker/telemetry"
-//
-// For PRODUCTION on Railway (port 8080):
-//   Change API_SERVER_PORT back to 8080
+// Using Railway deployment on port 8080:
+//   1. Railway automatically deploys your Node server
+//   2. Provides public URL: trackerservertest-production.up.railway.app
+//   3. Set API_SERVER_ADDR to "trackerservertest-production.up.railway.app"
+//   4. Set API_SERVER_PORT to 8080 (Railway default port)
+//   5. Set API_ENDPOINT_PATH to "/api/tracker/telemetry"
 //
 #define API_SERVER_ADDR     "trackerservertest-production.up.railway.app"
-#define API_SERVER_PORT     8081
+#define API_SERVER_PORT     8080
 #define API_ENDPOINT_PATH   "/api/tracker/telemetry"
 #define API_REQUEST_TIMEOUT 15000UL                   // 15s timeout for LTE

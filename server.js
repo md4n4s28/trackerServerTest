@@ -393,17 +393,30 @@ const PORT = process.env.PORT || 8081;
 const HOST = '0.0.0.0';
 const RAILWAY_URL = 'https://trackerservertest-production.up.railway.app';
 
-app.listen(PORT, HOST, () => {
+const server = app.listen(PORT, HOST, () => {
   console.log('\n╔════════════════════════════════════════════════════════════╗');
   console.log('║   SMART TRACKER TELEMETRY SERVER v1.0                   ║');
   console.log('╚════════════════════════════════════════════════════════════╝\n');
   console.log(`✓ Server running on http://${HOST}:${PORT}`);
-  console.log(`✓ Railway Deployment: ${RAILWAY_URL}`);
-  console.log(`✓ Dashboard: ${RAILWAY_URL}/dashboard`);
-  console.log(`✓ API Endpoint (POST): POST ${RAILWAY_URL}/api/tracker/telemetry`);
-  console.log(`✓ API Endpoint (GET): GET ${RAILWAY_URL}/api/tracker/telemetry`);
-  console.log(`✓ Latest Record: GET ${RAILWAY_URL}/api/tracker/telemetry/latest`);
-  console.log(`✓ History: GET ${RAILWAY_URL}/api/tracker/telemetry/history`);
-  console.log(`✓ Health: GET ${RAILWAY_URL}/api/health\n`);
+  console.log(`✓ Railway Deployment: ${RAILWAY_URL}:8081`);
+  console.log(`✓ Dashboard: ${RAILWAY_URL}:8081/dashboard`);
+  console.log(`✓ API Endpoint (POST): POST ${RAILWAY_URL}:8081/api/tracker/telemetry`);
+  console.log(`✓ API Endpoint (GET): GET ${RAILWAY_URL}:8081/api/tracker/telemetry`);
+  console.log(`✓ Latest Record: GET ${RAILWAY_URL}:8081/api/tracker/telemetry/latest`);
+  console.log(`✓ History: GET ${RAILWAY_URL}:8081/api/tracker/telemetry/history`);
+  console.log(`✓ Health: GET ${RAILWAY_URL}:8081/api/health\n`);
   console.log('Waiting for telemetry data from tracker...\n');
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('\n[SHUTDOWN] SIGTERM received, closing server gracefully...');
+  server.close(() => {
+    console.log('[SHUTDOWN] Server closed');
+    process.exit(0);
+  });
+  setTimeout(() => {
+    console.error('[SHUTDOWN] Forced exit after 10s');
+    process.exit(1);
+  }, 10000);
 });

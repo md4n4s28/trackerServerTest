@@ -675,15 +675,15 @@ bool sendTelemetryViaHTTP(const TelemetryRecord& rec) {
   int jsonLen = json.length();
 
   // Headers (without body) — build into a fixed buffer
-  char headerBuf[256];
+  char headerBuf[512];
   int headerLen = snprintf(headerBuf, sizeof(headerBuf),
     "POST %s HTTP/1.1\r\n"
-    "Host: %s\r\n"
+    "Host: %s:%d\r\n"
     "Content-Type: application/json\r\n"
     "Content-Length: %d\r\n"
     "Connection: close\r\n"
     "\r\n",
-    API_ENDPOINT_PATH, API_SERVER_ADDR, jsonLen);
+    API_ENDPOINT_PATH, API_SERVER_ADDR, API_SERVER_PORT, jsonLen);
 
   int totalLen = headerLen + jsonLen;
   Serial.printf("[API] Header: %d bytes  JSON: %d bytes  Total: %d bytes\n",
