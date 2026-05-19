@@ -88,7 +88,7 @@
 // 3. Set API_SERVER_ADDR to "your-app.railway.app", port 80
 //
 #define API_SERVER_ADDR     "trackerservertest-production.up.railway.app"
-#define API_SERVER_PORT     3000
+#define API_SERVER_PORT     8081
 #define API_ENDPOINT_PATH   "/api/tracker/telemetry"
 #define API_REQUEST_TIMEOUT 15000UL                   // 15s timeout for LTE
 
