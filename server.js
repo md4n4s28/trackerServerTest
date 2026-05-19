@@ -391,19 +391,19 @@ app.use((req, res) => {
 // ===== START SERVER =====
 const PORT = process.env.PORT || 3000;
 const HOST = '0.0.0.0';
-const WEBHOOK_URL = 'https://webhook.site/6433c8b7-b564-4011-a018-40cefb7e62ea';
+const RAILWAY_URL = 'https://trackerservertest-production.up.railway.app';
 
 app.listen(PORT, HOST, () => {
   console.log('\n╔════════════════════════════════════════════════════════════╗');
   console.log('║   SMART TRACKER TELEMETRY SERVER v1.0                   ║');
   console.log('╚════════════════════════════════════════════════════════════╝\n');
   console.log(`✓ Server running on http://${HOST}:${PORT}`);
-  console.log(`✓ Webhook.site: ${WEBHOOK_URL}`);
-  console.log(`✓ Dashboard: http://localhost:${PORT}/dashboard`);
-  console.log(`✓ API Endpoint (POST): POST http://localhost:${PORT}/api/tracker/telemetry`);
-  console.log(`✓ API Endpoint (GET): GET http://localhost:${PORT}/api/tracker/telemetry`);
-  console.log(`✓ Latest Record: GET http://localhost:${PORT}/api/tracker/telemetry/latest`);
-  console.log(`✓ History: GET http://localhost:${PORT}/api/tracker/telemetry/history`);
-  console.log(`✓ Health: GET http://localhost:${PORT}/api/health\n`);
+  console.log(`✓ Railway Deployment: ${RAILWAY_URL}`);
+  console.log(`✓ Dashboard: ${RAILWAY_URL}/dashboard`);
+  console.log(`✓ API Endpoint (POST): POST ${RAILWAY_URL}/api/tracker/telemetry`);
+  console.log(`✓ API Endpoint (GET): GET ${RAILWAY_URL}/api/tracker/telemetry`);
+  console.log(`✓ Latest Record: GET ${RAILWAY_URL}/api/tracker/telemetry/latest`);
+  console.log(`✓ History: GET ${RAILWAY_URL}/api/tracker/telemetry/history`);
+  console.log(`✓ Health: GET ${RAILWAY_URL}/api/health\n`);
   console.log('Waiting for telemetry data from tracker...\n');
 });

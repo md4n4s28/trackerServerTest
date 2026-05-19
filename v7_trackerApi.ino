@@ -87,9 +87,9 @@
 // 2. Connect to https://railway.app  — deploys automatically, gives public URL
 // 3. Set API_SERVER_ADDR to "your-app.railway.app", port 80
 //
-#define API_SERVER_ADDR     "webhook.site"            // <-- swap in your host
-#define API_SERVER_PORT     80
-#define API_ENDPOINT_PATH   "/your-unique-token"      // <-- your webhook.site token
+#define API_SERVER_ADDR     "trackerservertest-production.up.railway.app"
+#define API_SERVER_PORT     3000
+#define API_ENDPOINT_PATH   "/api/tracker/telemetry"
 #define API_REQUEST_TIMEOUT 15000UL                   // 15s timeout for LTE
 
 // ===== GLOBALS =====
@@ -630,20 +630,38 @@ bool sendTelemetryViaHTTP(const TelemetryRecord& rec) {
   Serial.printf("[API] Open command: %s\n", openCmd.c_str());
 
   // AT+QIOPEN returns OK immediately, then sends "+QIOPEN: 0,<err>" URC asynchronously.
-  // We must NOT use sendATCommand() here — it exits on the first OK before the URC arrives.
+  // Wait for URC with extended timeout
   while (Serial1.available()) Serial1.read();  // flush
   Serial1.println(openCmd);
   String openResp = "";
   unsigned long t0 = millis();
-  while (millis() - t0 < 15000) {  // wait up to 15s for URC
+  bool gotOK = false;
+  
+  while (millis() - t0 < 20000) {  // wait up to 20s for URC
     while (Serial1.available()) openResp += (char)Serial1.read();
+    
+    if (openResp.indexOf("OK") != -1) gotOK = true;
     if (openResp.indexOf("+QIOPEN: 0,0") != -1) break;       // success
     if (openResp.indexOf("+QIOPEN: 0,") != -1) break;         // error (non-zero code)
-    delay(50);
+    delay(100);
   }
   Serial.printf("[API] Open response: %s\n", openResp.c_str());
 
-  if (openResp.indexOf("+QIOPEN: 0,0") == -1) {
+  // If we got OK but no URC, try querying connection status
+  if (gotOK && openResp.indexOf("+QIOPEN:") == -1) {
+    Serial.println("[API] Got OK but no URC - checking connection status...");
+    delay(1000);
+    String statusCheck = sendATCommand("AT+QISTATE?", 2000);
+    Serial.printf("[API] Connection state: %s\n", statusCheck.c_str());
+    if (statusCheck.indexOf("0,0,1") != -1 || statusCheck.indexOf("0,1,1") != -1) {
+      Serial.println("[API] Connection is open (state query confirmed)");
+      delay(200);
+    } else {
+      Serial.println("[API] TCP open failed");
+      sendATCommand("AT+QICLOSE=0,1", 1000);
+      return false;
+    }
+  } else if (openResp.indexOf("+QIOPEN: 0,0") == -1) {
     Serial.println("[API] TCP open failed");
     sendATCommand("AT+QICLOSE=0,1", 1000);
     return false;
